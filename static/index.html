@@ -30,13 +30,9 @@
     return false;
   }
 
-  function mostRecent(date) {
-    const toDate = new Date();
-    if (date.getTime() > (toDate.getTime()- 86400000) && date.getTime() < toDate.getTime()) {
-      return true
-    }
-    return false;
-  }
+  const mostRecent = (l) => new Date(Math.max.apply(null, l.map( e => {
+        return new Date(e.time); 
+  })));
 
   function displayData(result, city) {
     const filteredByCity = result.filter(x => {
@@ -70,42 +66,34 @@
       return x.type === 'temperature';
     }).map(x => x.value));
 
-    const getLatestData = filteredByCity.filter(x => {
-      const d = new Date(x.time);
-      return mostRecent(d);
-    }).filter(x => {
-      return x.type = 'temperature';
-    }).map(x => { return "The temperature is: " + x.value;
-    }).filter(x => {
-      return x.type = 'precipitation';
-    }).map(x => {
-      return "The precipitation type is: " + x.precipitation_type + " , with value of: " + x.value;
-    }).filter(x => {
-      return x.type = 'wind speed';
-    }).map(x => {
-      return "The wind speed is: " + x.value + " in " + x.direction + " direction";
-    }).filter(x => {
-      return x.type = 'cloud coverage';
-    }).map(x => {
-      return "The cloud coverage is: " + x.value + x.unit;
-    });
-
-
-    // const mostRecentDate = result.filter(x => {
-    //   new Date(Math.max.apply(null, result.map(d => {
-    //     return new Date(d.time); 
-    //   })));
-    // });
-
-    // const mostRecentDate = new Date(Math.max.apply(null, result.map(d => {
-    //   return new Date(d.time);
-    // })));
-
-    // const getLatestData = filteredByCity.filter(x => {
-    //   const d= new Date(x.time);
-    //   return d.getTime() == mostRecentDate.getTime();
-    // })[0];
-
+    const getLatestData1 = () => {
+      var temperatureList = filteredByCity.filter(x => {
+        return x.type == 'temperature';
+      });
+      var temperature = temperatureList.filter(x => {
+        return (new Date(x.time)).getTime() == mostRecent(temperatureList).getTime();
+      })[0]; 
+      var precipitationList = filteredByCity.filter(x => {
+        return x.type == 'precipitation';
+      });
+      var precipitation = precipitationList.filter(x => {
+        return (new Date(x.time)).getTime() == mostRecent(precipitationList).getTime();
+      })[0];
+      var windspeedList = filteredByCity.filter(x => {
+        return x.type == 'wind speed';
+      });
+      var windspeed = windspeedList.filter(x => {
+        return (new Date(x.time)).getTime() == mostRecent(windspeedList).getTime();
+      })[0];
+      var cloudList = filteredByCity.filter(x => {
+        return x.type == 'cloud coverage';
+      });
+      var cloud = cloudList.filter(x => {
+        return (new Date(x.time)).getTime() == mostRecent(cloudList).getTime();
+      })[0];
+      console.log("PRECIPITATION IS : " + precipitation.type);
+      return [JSON.stringify(temperature), JSON.stringify(precipitation), JSON.stringify(windspeed), JSON.stringify(cloud)]
+    };
 
     const cloudCoverage = filteredByCity.filter(x => {
       const date = new Date(x.time);
@@ -132,7 +120,7 @@
       return Math.max(a, b);
     });
 
-    document.getElementById('one').innerHTML = getLatestData.toString();
+    document.getElementById('one').innerHTML = getLatestData1().toString();
     document.getElementById('two').innerHTML = Math.round(minTemperature).toString();
     document.getElementById('three').innerHTML = Math.round(maxTemperature).toString();
     document.getElementById('four').innerHTML = Math.round(lastDays).toString();
