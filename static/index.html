@@ -48,6 +48,36 @@
       return x.type === 'wind speed';
     });
 
+    const minTemperature = Math.min(...filteredByCity.filter(x => {
+      const date = new Date(x.time);
+      return contains(date);
+    }).filter(x => {
+      return x.type === 'temperature';
+    }).map(x => x.value));
+
+    const maxTemperature = Math.max(...filteredByCity.filter(x => {
+      const date = new Date(x.time);
+      return contains(date);
+    }).filter(x => {
+      return x.type === 'temperature';
+    }).map(x => x.value));
+
+    // const mostRecentDate = result.filter(x => {
+    //   new Date(Math.max.apply(null, result.map(d => {
+    //     return new Date(d.time); 
+    //   })));
+    // });
+
+    // const mostRecentDate = (result) => new Date(Math.max.apply(null, result.map(d => {
+    //   return new Date(d.time);
+    // })))
+
+    // const getLatestData = filteredByCity.filter(x => {
+    //   const d= new Date(x.time);
+    //   return d.getTime() == mostRecentDate.getTime();
+    // })
+
+
     const cloudCoverage = filteredByCity.filter(x => {
       const date = new Date(x.time);
       return contains(date);
@@ -73,6 +103,9 @@
       return Math.max(a, b);
     });
 
+    // document.getElementById('one').innerHTML = getLatestData.toString();
+    document.getElementById('two').innerHTML = Math.round(minTemperature).toString();
+    document.getElementById('three').innerHTML = Math.round(maxTemperature).toString();
     document.getElementById('four').innerHTML = Math.round(lastDays).toString();
     document.getElementById('five').innerHTML = Math.round(averageWindSpeed).toString();
     document.getElementById('six').innerHTML = directions[numberOfDirections.indexOf(mostFrequent)];
