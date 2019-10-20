@@ -52,7 +52,7 @@
       const date = new Date(x.time);
       return contains(date);
     }).filter(x => {
-      return x.type === 'cloud coverage ';
+      return x.type === 'cloud coverage';
     });
 
     const averageWindSpeed = (windSpeed.reduce((x,y) => x + y.value, 0))/windSpeed.length;
