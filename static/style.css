@@ -1,0 +1,33 @@
+body{
+    font-family:"Comic Sans MS", cursive, sans-serif;
+    background-color: #9dc2ff;
+}
+
+h1{
+    text-align: center;
+}
+
+button{
+    background-color: #ffd541;
+    border: 2px solid #ffd541;
+}
+
+button:hover{
+    background-color: #ffc000;
+    border: 2px solid #ffc000;
+}
+
+button:focus{
+    background-color: #ffc000;
+    border: 2px solid #ffc000;
+    outline-style: none;
+}
+
+#display{
+    margin: 0 auto;
+    padding: 10px;
+    width: 40%;
+    height: auto;
+    background-color: #feff86;
+    border: 2px solid #ffd541;
+}

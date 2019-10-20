@@ -1,8 +1,96 @@
 <html>
   <head>
-
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    
+  <h1>Weather report</h1>
+  <div id = "display">
+    All data for the latest measurement of each kind: <span id="one"></span><br>
+    Minimum temperature for the last 5 days: <span id="two"></span><br>
+    Maximum temperature for the last 5 days: <span id="three"></span><br>
+    Total precipitation for the last 5 days: <span id="four"></span><br>
+    Average wind speed for the last 5 days: <span id="five"></span><br>
+    Dominant wind direction for the last 5 days: <span id="six"></span><br>
+    Average cloud coverage for the last 5 days: <span id="seven"></span><br>
+    Hourly predictions for the next 24 hours: <span id="eight"></span><br>
+    <div id="buttons">
+      <button onclick="getData('Horsens')">Horsens</button>
+      <button onclick="getData('Aarhus')">Aarhus</button>
+      <button onclick="getData('Copenhagen')">Copenhagen</button>
+    </div>
+  </div>
   </body>
 </html>
+<script type="text/javascript">
+  function contains(date) {
+    const toDate = new Date();
+    if (date.getTime() > (toDate.getTime()-432000000) && date.getTime() < toDate.getTime()) {
+      return true
+    }
+    return false;
+  }
+
+  function displayData(result, city) {
+    const filteredByCity = result.filter(x => {
+      return x.place === city;
+    });
+    const lastDays = filteredByCity.filter(x => {
+      const d = new Date(x.time);
+      return contains(d);
+    }).filter(x => {
+      return x.type === 'precipitation';
+    }).reduce((x,y) => x + y.value, 0);
+
+    const windSpeed = filteredByCity.filter(x => {
+      const d = new Date(x.time);
+      return contains(d);
+    }).filter(x => {
+      return x.type === 'wind speed';
+    });
+
+    const averageWindSpeed = (windSpeed.reduce((x,y) => x + y.value, 0))/windSpeed.length;
+
+    const directions = ['North', 'South', 'East', 'West', 'Northeast', 'Northwest', 'Southeast', 'Southwest'];
+    const numberOfDirections = [0, 0, 0, 0, 0, 0, 0, 0];
+
+    windSpeed.forEach(x => {
+      directions.forEach(y => {
+        if(x.direction === y) {
+          numberOfDirections[directions.indexOf(y)] ++;
+        }
+      })
+    });
+
+    const mostFrequent = numberOfDirections.reduce(function(a, b) {
+      return Math.max(a, b);
+    });
+
+    document.getElementById('four').innerHTML = Math.round(lastDays).toString();
+    document.getElementById('five').innerHTML = Math.round(averageWindSpeed).toString();
+    document.getElementById('six').innerHTML = directions[numberOfDirections.indexOf(mostFrequent)];
+  }
+
+
+  async function getData(place) {
+    const result = await fetch('http://localhost:8080/data');
+    const resultJson = await result.json();
+    console.log(JSON.stringify(resultJson));
+    displayData(resultJson, place);
+  }
+  //getData("Horsens");
+
+  function getDataHttp(place) {
+    const Http = new XMLHttpRequest();
+    const url = 'http://localhost:8080/data';
+    Http.open('GET', url);
+    Http.send();
+    Http.onreadystatechange = function () {
+      if(this.readyState === 4 && this.status === 200) {
+        console.log(Http.responseText);
+        const result = Http.responseText.split(', ');
+        displayData(result, place);
+      }
+    }
+  }
+  //getDataHttp();
+</script>
