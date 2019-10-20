@@ -111,7 +111,7 @@
       const date = new Date(x.time);
       return contains(date);
     }).filter(x => {
-      return x.type === 'cloud coverage ';
+      return x.type === 'cloud coverage';
     });
 
     const averageWindSpeed = (windSpeed.reduce((x,y) => x + y.value, 0))/windSpeed.length;
@@ -139,15 +139,18 @@
     document.getElementById('five').innerHTML = Math.round(averageWindSpeed).toString();
     document.getElementById('six').innerHTML = directions[numberOfDirections.indexOf(mostFrequent)];
     document.getElementById('seven').innerHTML = Math.round(averageCloudCoverage).toString()
-    document.getElementById('eight').innerHTML = predictions[numberOfPredictions.indexOf(last5days)];
-  }
 
+  }
+  function displayFutureData(result) {
+    document.getElementById('eight').innerHTML =result;
+  }
 
   async function getData(place) {
     const result = await fetch('http://localhost:8080/data');
     const resultJson = await result.json();
     console.log(JSON.stringify(resultJson));
     displayData(resultJson, place);
+    getFutureDataHttp(place);
   }
 
   function getDataHttp(place) {
@@ -160,6 +163,19 @@
         console.log(Http.responseText);
         const result = Http.responseText.split(', ');
         displayData(result, place);
+      }
+    }
+  }
+  function getFutureDataHttp(place) {
+    const Http = new XMLHttpRequest();
+    const url = 'http://localhost:8080/forecast/'+place;
+    Http.open('GET', url);
+    Http.send();
+    Http.onreadystatechange = function () {
+      if(this.readyState === 4 && this.status === 200) {
+        console.log(Http.responseText);
+        const result = Http.responseText.split(', ');
+        displayFutureData(result);
       }
     }
   }
