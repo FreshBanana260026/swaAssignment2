@@ -76,7 +76,8 @@
     document.getElementById('four').innerHTML = Math.round(lastDays).toString();
     document.getElementById('five').innerHTML = Math.round(averageWindSpeed).toString();
     document.getElementById('six').innerHTML = directions[numberOfDirections.indexOf(mostFrequent)];
-    document.getElementById('seven').innerHTML = Math.round(averageCloudCoverage).toString();
+    document.getElementById('seven').innerHTML = Math.round(averageCloudCoverage).toString()
+    document.getElementById('eight').innerHTML = predictions[numberOfPredictions.indexOf(last5days)];
   }
 
 
