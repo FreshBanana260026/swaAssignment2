@@ -65,9 +65,19 @@
       return Math.max(a, b);
     });
 
+    const cloudCoverage = filteredByCity.filter(x => {
+      const date = new Date(x.time);
+      return contains(date);
+    }).filter(x => {
+      return x.type === 'cloud coverage ';
+    });
+
+    const averageCloudCoverage = (cloudCoverage.reduce((x,y) => x + y.value, 0))/cloudCoverage.length;
+
     document.getElementById('four').innerHTML = Math.round(lastDays).toString();
     document.getElementById('five').innerHTML = Math.round(averageWindSpeed).toString();
     document.getElementById('six').innerHTML = directions[numberOfDirections.indexOf(mostFrequent)];
+    document.getElementById('seven').innerHTML = Math.round(averageCloudCoverage).toString();
   }
 
 
